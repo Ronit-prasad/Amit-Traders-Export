@@ -262,6 +262,36 @@ nav {
     display: none;
 }
 
+/* Mobile Menu Toggle */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 1001;
+    padding: 10px;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 28px;
+    height: 2px;
+    background-color: var(--color-dark-blue);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.menu-toggle.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
 /* Product Page Styles */
 .product-hero {
     padding: 160px 5% 80px;
@@ -342,6 +372,19 @@ nav {
     align-items: center;
 }
 
+@media (max-width: 991px) {
+    .quality-detail {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        text-align: center;
+    }
+
+    .quality-feature {
+        justify-content: center;
+        text-align: left;
+    }
+}
+
 .quality-detail h2 {
     font-size: 3rem;
     margin-bottom: 24px;
@@ -415,18 +458,73 @@ nav {
 
 /* Responsive */
 @media (max-width: 991px) {
+    nav {
+        padding: 15px 5%;
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        height: 100vh;
+        background: var(--color-white);
+        flex-direction: column;
+        justify-content: center;
+        gap: 40px;
+        transition: right 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        padding: 40px;
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    .nav-links a {
+        font-size: 24px;
+        opacity: 1;
+    }
+
+    .nav-links a.btn-primary {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
+
     .hero-content {
         grid-template-columns: 1fr;
         text-align: center;
-        gap: 40px;
+        gap: 60px;
+        padding-top: 40px;
+    }
+
+    .hero-text h1 {
+        font-size: clamp(2.5rem, 8vw, 3.5rem);
     }
 
     .hero-text p {
         margin: 0 auto 40px;
     }
 
-    .nav-links {
-        display: none;
+    .hero-btns {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .btn-secondary {
+        margin-left: 0;
+    }
+
+    .stats-container {
+        flex-direction: column;
+        gap: 40px;
     }
 }
 
@@ -452,6 +550,14 @@ nav {
     max-width: 1200px;
     margin: 0 auto;
     align-items: center;
+}
+
+@media (max-width: 991px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        text-align: center;
+    }
 }
 
 .about-text h2 {
@@ -483,6 +589,12 @@ nav {
     transition: transform 0.3s ease;
 }
 
+@media (max-width: 768px) {
+    .mission-card {
+        padding: 30px;
+    }
+}
+
 .mission-card:hover {
     transform: translateY(-10px);
     box-shadow: var(--shadow-blue);
@@ -510,6 +622,19 @@ nav {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
+}
+
+@media (max-width: 991px) {
+    .why-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 60px;
+    }
+
+    .why-text p {
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 .feature-grid {
@@ -571,6 +696,12 @@ nav {
     gap: 40px;
     max-width: 1000px;
     margin: 60px auto 0;
+}
+
+@media (max-width: 768px) {
+    .workflow-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .workflow-item h4 {
@@ -749,6 +880,14 @@ footer {
     margin: 0 auto;
 }
 
+@media (max-width: 991px) {
+    .capability-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 60px;
+    }
+}
+
 .readiness-section {
     background: var(--color-dark-blue);
     color: var(--color-white);
@@ -799,12 +938,28 @@ footer {
 }
 
 .contact-layout {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 80px;
     max-width: 1200px;
     margin: 0 auto 100px;
     padding: 0 5%;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: start;
+}
+
+@media (max-width: 991px) {
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .contact-info-panel, .inquiry-form-card {
+        padding: 40px 20px;
+    }
+
+    .contact-method p {
+        font-size: 1.2rem;
+    }
 }
 
 .contact-info-panel {
@@ -868,13 +1023,6 @@ footer {
 .form-group textarea:focus {
     outline: none;
     border-color: var(--color-magenta);
-}
-
-@media (max-width: 991px) {
-    .contact-layout {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
 }
 
 
