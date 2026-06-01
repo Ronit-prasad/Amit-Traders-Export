@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initializeSite() {
   // Mobile menu toggle logic
   const menuToggle = document.querySelector(".menu-toggle");
   const navLinks = document.querySelector(".nav-links");
@@ -72,4 +72,82 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
-});
+
+  // Product card interactive color switcher
+  const productCards = document.querySelectorAll(".product-card");
+  
+  productCards.forEach((card) => {
+    const swatches = card.querySelectorAll(".swatch-btn");
+    const imgContainer = card.querySelector(".product-img-container");
+    const img = card.querySelector(".product-img");
+    const colorBadge = card.querySelector(".color-badge-overlay");
+    
+    if (!swatches.length || !img) return;
+
+    // Preload images to avoid flash of blank spaces
+    const imageUrls = Array.from(swatches).map(s => s.dataset.image).filter(Boolean);
+    imageUrls.forEach(url => {
+      const tempImg = new Image();
+      tempImg.src = url;
+    });
+
+    // Function to change product color
+    function setProductColor(swatchBtn) {
+      if (swatchBtn.classList.contains("active")) return;
+      
+      const newImage = swatchBtn.dataset.image;
+      const newColor = swatchBtn.dataset.color;
+      const newFilter = swatchBtn.dataset.filter || "none";
+      
+      // Update swatches active state
+      swatches.forEach(btn => btn.classList.remove("active"));
+      swatchBtn.classList.add("active");
+      
+      // Trigger smooth switching animation
+      img.classList.add("switching");
+      
+      setTimeout(() => {
+        if (newImage) img.src = newImage;
+        img.style.filter = newFilter;
+        if (colorBadge && newColor) {
+          colorBadge.textContent = newColor;
+        }
+        
+        // Remove animation class after image is swapped
+        setTimeout(() => {
+          img.classList.remove("switching");
+        }, 50);
+      }, 150); // Matches halfway through our transition
+    }
+
+    // Swatch click handlers
+    swatches.forEach(swatch => {
+      swatch.addEventListener("click", (e) => {
+        e.stopPropagation(); // Avoid triggering card or image clicks
+        setProductColor(swatch);
+      });
+    });
+
+    // Image/Container click handler - cycles through colors
+    if (imgContainer) {
+      imgContainer.addEventListener("click", () => {
+        const activeSwatch = card.querySelector(".swatch-btn.active");
+        let nextSwatchIndex = 0;
+        
+        if (activeSwatch) {
+          const swatchesArray = Array.from(swatches);
+          const currentIndex = swatchesArray.indexOf(activeSwatch);
+          nextSwatchIndex = (currentIndex + 1) % swatchesArray.length;
+        }
+        
+        setProductColor(swatches[nextSwatchIndex]);
+      });
+    }
+  });
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initializeSite);
+} else {
+  initializeSite();
+}
