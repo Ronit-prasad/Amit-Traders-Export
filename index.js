@@ -73,7 +73,7 @@ function initializeSite() {
     });
   });
 
-  // Product card interactive color switcher
+  // Product card interactive style & color switcher
   const productCards = document.querySelectorAll(".product-card");
   
   productCards.forEach((card) => {
@@ -81,6 +81,11 @@ function initializeSite() {
     const imgContainer = card.querySelector(".product-img-container");
     const img = card.querySelector(".product-img");
     const colorBadge = card.querySelector(".color-badge-overlay");
+    
+    // Style Selector Elements
+    const styleTabs = card.querySelectorAll(".style-tab-btn");
+    const styleGroups = card.querySelectorAll(".color-swatches.style-group");
+    const descText = card.querySelector(".product-desc-text");
     
     if (!swatches.length || !img) return;
 
@@ -128,19 +133,68 @@ function initializeSite() {
       });
     });
 
-    // Image/Container click handler - cycles through colors
+    // Style Tabs click handler
+    if (styleTabs.length && styleGroups.length) {
+      const descriptions = {
+        designer: "Streetwear-focused designs featuring distressed ripped details, custom washing treatments, and statement textures.",
+        casual: "Clean silhouette for everyday comfort. Features solid colors, classic washes, and premium durable stitching."
+      };
+      
+      styleTabs.forEach(tab => {
+        tab.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (tab.classList.contains("active")) return;
+          
+          const selectedStyle = tab.dataset.style;
+          
+          // Toggle active class on tabs
+          styleTabs.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          
+          // Toggle active class and visibility on style groups
+          styleGroups.forEach(group => {
+            if (group.dataset.styleGroup === selectedStyle) {
+              group.style.display = "flex";
+              group.classList.add("active");
+              
+              // Select the first swatch of this new active group
+              const firstSwatch = group.querySelector(".swatch-btn");
+              if (firstSwatch) {
+                setProductColor(firstSwatch);
+              }
+            } else {
+              group.style.display = "none";
+              group.classList.remove("active");
+            }
+          });
+          
+          // Update description text dynamically
+          if (descText && descriptions[selectedStyle]) {
+            descText.textContent = descriptions[selectedStyle];
+          }
+        });
+      });
+    }
+
+    // Image/Container click handler - cycles through colors of the active group
     if (imgContainer) {
       imgContainer.addEventListener("click", () => {
-        const activeSwatch = card.querySelector(".swatch-btn.active");
+        const activeGroup = card.querySelector(".color-swatches.style-group.active") || card.querySelector(".color-swatches");
+        if (!activeGroup) return;
+        
+        const visibleSwatches = activeGroup.querySelectorAll(".swatch-btn");
+        const activeSwatch = activeGroup.querySelector(".swatch-btn.active");
         let nextSwatchIndex = 0;
         
-        if (activeSwatch) {
-          const swatchesArray = Array.from(swatches);
+        if (activeSwatch && visibleSwatches.length) {
+          const swatchesArray = Array.from(visibleSwatches);
           const currentIndex = swatchesArray.indexOf(activeSwatch);
           nextSwatchIndex = (currentIndex + 1) % swatchesArray.length;
         }
         
-        setProductColor(swatches[nextSwatchIndex]);
+        if (visibleSwatches.length) {
+          setProductColor(visibleSwatches[nextSwatchIndex]);
+        }
       });
     }
   });
